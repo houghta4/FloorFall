@@ -24,8 +24,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     private Thread thread;
     private boolean running;
-    private boolean gameOver = false;
-    private boolean gameWin = false;
+    private boolean gameOver;
+    private boolean gameWin;
 
     private BufferedImage image;
     private Graphics2D g;
@@ -74,8 +74,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
         while (running) {
             //removes life sprite
-            if(player.reset){
-                lifeList.remove(lifeList.size() -1);
+            if(player.reset && lifeList.size() > 0){
+                    lifeList.remove(lifeList.size() - 1);
             }
             //resets current level if lost
             if(player.reset && player.lives > 0 && player.lvl == 0){
@@ -92,26 +92,20 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             if(player.win && player.lvl == 1 || (player.reset && player.lives > 0 && player.lvl == 1 )){
                 init2();
             }
-//            if(player.reset && player.lives > 0 && player.lvl == 1){ //this will have to change when more than 2 levels are added
-//                init2();
-//            }
             if(player.win && player.lvl == 2 || player.reset && player.lives > 0 && player.lvl == 2){
                 init3();
             }
-//            if(player.reset && player.lives > 0 && player.lvl == 2){ //this will have to change when more than 2 levels are added
-//                init3();
-//            }
-
             if(player.win && player.lvl == 3 || (player.reset && player.lives > 0 && player.lvl == 3)){
                 init4();
             }
-
             if(player.win && player.lvl == 4 || (player.reset && player.lives > 0 && player.lvl == 4)){
                 init5();
             }
+
             startTime = System.nanoTime();
 
             update();
+
             render();
             draw();
 
@@ -123,8 +117,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
     }
+
 
     //TODO there is definitely a better way to do this
     private void init() {
@@ -205,10 +201,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             Sprite.drawArray(g, font, "Level five", new Vector2f(260,515), 32,32,12, 0);
         }
         if(gameOver){
-            Sprite.drawArray(g, font, "GAME OVER", new Vector2f(250 ,250), 64,64,26, 0);
+            Sprite.drawArray(g, font, "GAME OVER", new Vector2f(190 ,250), 128,128,50, 0);
         }if(gameWin){
-            Sprite.drawArray(g, font, "WINNER WINNER", new Vector2f(250 ,250), 64,64,26, 0);
-            Sprite.drawArray(g, font, "CHICKEN DINNER", new Vector2f(250 ,350), 64,64,26, 0);
+            Sprite.drawArray(g, font, "WINNER WINNER", new Vector2f(90 ,250), 128,128,50, 0);
+            Sprite.drawArray(g, font, "CHICKEN DINNER", new Vector2f(80 ,360), 128,128,50, 0);
+        }
+        if(gameOver || gameWin){
+
         }
         Sprite.drawArray(g , lifeList, new Vector2f(570,550), 50,50,50,0);
     }
