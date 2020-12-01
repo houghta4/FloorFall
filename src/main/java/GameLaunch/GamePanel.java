@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 //TODO maybe put all text under game and keep same amt of rows each level
+//TODO get a strainer for this spaghetti
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
 
@@ -32,6 +33,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     private int FPS = 30;
     private int targetTime = 1000 / FPS;
+
+    private int floors = 0;
 
     private TileMap tileMap;
     private Player player;
@@ -101,6 +104,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             if(player.win && player.lvl == 4 || (player.reset && player.lives > 0 && player.lvl == 4)){
                 init5();
             }
+            if(player.win){
+                checkFloors();
+            }
 
             startTime = System.nanoTime();
 
@@ -118,6 +124,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    private void checkFloors(){
+        for (int i = 0; i < tileMap.getMapHeight(); i++){
+            for(int j = 0; j < tileMap.getMapWidth(); j++){
+                if (tileMap.getTile(i,j) == TileMap.FLOOR){
+                    floors++;
+                }
+            }
         }
     }
 
@@ -202,12 +218,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
         if(gameOver){
             Sprite.drawArray(g, font, "GAME OVER", new Vector2f(190 ,250), 128,128,50, 0);
-        }if(gameWin){
+        }
+        if(gameWin && floors == 0){
+            if(player.lives == 3){
+                Sprite.drawArray(g, font, "FLAWLESS", new Vector2f(200 ,140), 128,128,50, 0);
+            }
             Sprite.drawArray(g, font, "WINNER WINNER", new Vector2f(90 ,250), 128,128,50, 0);
             Sprite.drawArray(g, font, "CHICKEN DINNER", new Vector2f(80 ,360), 128,128,50, 0);
         }
-        if(gameOver || gameWin){
-
+        if(gameWin && floors != 0){
+            Sprite.drawArray(g, font, "UNACCEPTABLE", new Vector2f(90 ,250), 128,128,50, 0);
+            Sprite.drawArray(g, font, "Melt ALL floor tiles", new Vector2f(80 ,360), 96,96,34, 0);
         }
         Sprite.drawArray(g , lifeList, new Vector2f(570,550), 50,50,50,0);
     }
